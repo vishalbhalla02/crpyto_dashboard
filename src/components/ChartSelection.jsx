@@ -18,7 +18,7 @@ const ChartSection = ({
           text: "Market Price (INR)",
           style: { fontSize: "14px", fontWeight: "bold", color: "#fcdf03" },
         },
-        stroke: { curve: "smooth" },
+        stroke: { curve: "smooth", width: 2 },
         xaxis: { type: "datetime" },
         dataLabels: { enabled: false },
         yaxis: { show: false },
@@ -38,7 +38,7 @@ const ChartSection = ({
           text: "Market Cap (INR)",
           style: { fontSize: "14px", fontWeight: "bold", color: "#ff69f5" },
         },
-        stroke: { curve: "smooth" },
+        stroke: { curve: "smooth", width: 1 },
         xaxis: { type: "datetime" },
         dataLabels: { enabled: false },
         yaxis: { show: false },
@@ -57,7 +57,7 @@ const ChartSection = ({
           text: "Market Volume",
           style: { fontSize: "14px", fontWeight: "bold", color: "#00ffea" },
         },
-        stroke: { curve: "smooth" },
+        stroke: { curve: "smooth", width: 1 },
         xaxis: { type: "datetime" },
         dataLabels: { enabled: false },
         yaxis: { show: false },
@@ -100,7 +100,7 @@ const ChartSection = ({
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(fetchData, 3000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -159,18 +159,18 @@ const ChartSection = ({
           />
         </div>
 
-        <div className="space-y-4 w-52">
+        <div className="space-y-2 w-52">
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Market Cap</h6>
-            <p className="text-sm font-bold">${MarketCap}</p>
+            <p className="text-sm font-bold">₹ {MarketCap}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Price Change 24hrs</h6>
-            <p className="text-sm font-bold">${priceChange24}</p>
+            <p className="text-sm font-bold">₹ {priceChange24}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Total Volume</h6>
-            <p className="text-sm font-bold">${TotVol}</p>
+            <p className="text-sm font-bold">₹ {TotVol}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Circulating Supply</h6>
@@ -188,7 +188,7 @@ const ChartSection = ({
               series={charts.Market_Cap.series}
               type="line"
               height="200"
-              width="300"
+              width="400"
             />
           </div>
           <div>
@@ -197,7 +197,7 @@ const ChartSection = ({
               series={charts.Tot_Vol.series}
               type="line"
               height="200"
-              width="300"
+              width="400"
             />
           </div>
         </div>

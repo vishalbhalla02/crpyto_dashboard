@@ -10,10 +10,9 @@ const Header = ({ handle_Submit }) => {
             name="selectCoin"
             onChange={handle_Submit}
           >
-            <option value="bitcoin">Select Coin</option>
+            <option value="bitcoin">Bitcoin (BTC)</option>
             <option value="avalanche-2">Avalanche (AVAX)</option>
             <option value="binancecoin">Binance (BNB)</option>
-            <option value="bitcoin">Bitcoin (BTC)</option>
             <option value="cardano">Cardano (ADA)</option>
             <option value="decentraland">Decentraland (MANA)</option>
             <option value="dogecoin">Dogecoin (DOGE)</option>
