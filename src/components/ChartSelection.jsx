@@ -24,7 +24,7 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#fcdf03"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
         selection: 365,
@@ -44,7 +44,7 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#ff69f5"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
       },
@@ -63,13 +63,41 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#00ffea"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
       },
       series: [{ name: "Market Volume", data: [] }],
     },
   });
+
+  const formatNumber = (num) => {
+    // Function to format numbers in the Indian currency system with commas
+    const formatCurrency = (number) => {
+      const parts = number.toString().split(".");
+      let integerPart = parts[0];
+      const decimalPart = parts.length > 1 ? "." + parts[1] : "";
+
+      // Add commas for the Indian numbering system
+      const firstPart = integerPart.slice(0, integerPart.length % 3 || 3);
+      const remaining = integerPart
+        .slice(integerPart.length % 3 || 3)
+        .replace(/\d{2}(?=\d)/g, "$&,");
+      integerPart = firstPart + (remaining ? "," + remaining : "");
+
+      return integerPart + decimalPart;
+    };
+
+    if (num >= 10000000) {
+      return formatCurrency((num / 10000000).toFixed(3)) + " Cr"; // Crore
+    } else if (num >= 100000) {
+      return formatCurrency((num / 100000).toFixed(3)) + " L"; // Lakh
+    } else if (num >= 1000) {
+      return formatCurrency((num / 1000).toFixed(3)) + " K"; // Thousand
+    } else {
+      return formatCurrency(num.toFixed(3)); // Less than 1000
+    }
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -162,23 +190,24 @@ const ChartSection = ({
         <div className="space-y-2 w-52">
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Market Cap</h6>
-            <p className="text-sm font-bold">₹ {MarketCap}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(MarketCap)}</p>
           </div>
+
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Price Change 24hrs</h6>
-            <p className="text-sm font-bold">₹ {priceChange24}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(priceChange24)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Total Volume</h6>
-            <p className="text-sm font-bold">₹ {TotVol}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(TotVol)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Circulating Supply</h6>
-            <p className="text-sm font-bold">{Circulating}</p>
+            <p className="text-sm font-bold">{formatNumber(Circulating)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Twitter Followers</h6>
-            <p className="text-sm font-bold">{twitterF}</p>
+            <p className="text-sm font-bold">{formatNumber(twitterF)}</p>
           </div>
         </div>
         <div className="col-span-2 md:col-span-1 space-y-4">
