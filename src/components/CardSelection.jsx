@@ -2,30 +2,39 @@ import React from "react";
 
 // Helper function to format numbers in Indian style
 const formatNumber = (num) => {
-  // Function to format numbers in the Indian currency system with commas
-  const formatCurrency = (number) => {
-    const parts = number.toString().split(".");
-    let integerPart = parts[0];
-    const decimalPart = parts.length > 1 ? "." + parts[1] : "";
+  let formattedNum;
 
-    // Add commas for the Indian numbering system
-    const firstPart = integerPart.slice(0, integerPart.length % 3 || 3);
-    const remaining = integerPart
-      .slice(integerPart.length % 3 || 3)
-      .replace(/\d{2}(?=\d)/g, "$&,");
-    integerPart = firstPart + (remaining ? "," + remaining : "");
+  // Function to apply Indian Numbering System (for commas)
+  const applyIndianCommas = (num) => {
+    let [integerPart, decimalPart] = num.split(".");
 
-    return integerPart + decimalPart;
+    // Add commas to the integer part in the Indian system
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // Return the formatted integer part with the decimal part if any
+    if (decimalPart && decimalPart !== "00") {
+      return integerPart + "." + decimalPart;
+    }
+    return integerPart;
   };
 
+  // Check if number is in Crores, Lakhs, or Thousands
   if (num >= 10000000) {
-    return formatCurrency((num / 10000000).toFixed(3)) + " Cr"; // Crore
+    // Above 1 Crore
+    formattedNum = (num / 10000000).toFixed(2); // Convert to crores
+    return applyIndianCommas(formattedNum) + " Cr";
   } else if (num >= 100000) {
-    return formatCurrency((num / 100000).toFixed(3)) + " L"; // Lakh
+    // Above 1 Lakh
+    formattedNum = (num / 100000).toFixed(2); // Convert to lakhs
+    return applyIndianCommas(formattedNum) + " L";
   } else if (num >= 1000) {
-    return formatCurrency((num / 1000).toFixed(3)) + " K"; // Thousand
+    // Above 1 Thousand
+    formattedNum = (num / 1000).toFixed(2); // Convert to thousands
+    return applyIndianCommas(formattedNum) + " K";
   } else {
-    return formatCurrency(num.toFixed(3)); // Less than 1000
+    // Below 1000, just format the number with commas
+    formattedNum = num.toFixed(2); // Ensure 2 decimal points
+    return applyIndianCommas(formattedNum);
   }
 };
 
