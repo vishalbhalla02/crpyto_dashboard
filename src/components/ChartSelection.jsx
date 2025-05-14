@@ -24,7 +24,7 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#fcdf03"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
         selection: 365,
@@ -44,7 +44,7 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#ff69f5"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
       },
@@ -63,13 +63,51 @@ const ChartSection = ({
         yaxis: { show: false },
         colors: ["#00ffea"],
         tooltip: {
-          y: { formatter: (value) => value.toFixed(2) },
+          y: { formatter: (value) => formatNumber(value) },
           theme: "dark",
         },
       },
       series: [{ name: "Market Volume", data: [] }],
     },
   });
+
+  const formatNumber = (n) => {
+    let num = Number(n);
+    let formattedNum;
+
+    // Function to apply Indian Numbering System (for commas)
+    const applyIndianCommas = (num) => {
+      let [integerPart, decimalPart] = num.split(".");
+
+      // Add commas to the integer part in the Indian system
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      // Return the formatted integer part with the decimal part if any
+      if (decimalPart && decimalPart !== "00") {
+        return integerPart + "." + decimalPart;
+      }
+      return integerPart;
+    };
+
+    // Check if number is in Crores, Lakhs, or Thousands
+    if (num >= 10000000) {
+      // Above 1 Crore
+      formattedNum = (num / 10000000).toFixed(2); // Convert to crores
+      return applyIndianCommas(formattedNum) + " Cr";
+    } else if (num >= 100000) {
+      // Above 1 Lakh
+      formattedNum = (num / 100000).toFixed(2); // Convert to lakhs
+      return applyIndianCommas(formattedNum) + " L";
+    } else if (num >= 1000) {
+      // Above 1 Thousand
+      formattedNum = (num / 1000).toFixed(2); // Convert to thousands
+      return applyIndianCommas(formattedNum) + " K";
+    } else {
+      // Below 1000, just format the number with commas
+      formattedNum = num.toFixed(2); // Ensure 2 decimal points
+      return applyIndianCommas(formattedNum);
+    }
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -162,23 +200,24 @@ const ChartSection = ({
         <div className="space-y-2 w-52">
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Market Cap</h6>
-            <p className="text-sm font-bold">₹ {MarketCap}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(MarketCap)}</p>
           </div>
+
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Price Change 24hrs</h6>
-            <p className="text-sm font-bold">₹ {priceChange24}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(priceChange24)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Total Volume</h6>
-            <p className="text-sm font-bold">₹ {TotVol}</p>
+            <p className="text-sm font-bold">₹ {formatNumber(TotVol)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Circulating Supply</h6>
-            <p className="text-sm font-bold">{Circulating}</p>
+            <p className="text-sm font-bold">{formatNumber(Circulating)}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded text-white">
             <h6 className="font-bold">Twitter Followers</h6>
-            <p className="text-sm font-bold">{twitterF}</p>
+            <p className="text-sm font-bold">{formatNumber(twitterF)}</p>
           </div>
         </div>
         <div className="col-span-2 md:col-span-1 space-y-4">
